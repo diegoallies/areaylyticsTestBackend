@@ -1,30 +1,50 @@
 GET https://encryptogram-backend.herokuapp.com/62273e8aaa19a51877c29ef2
 
 ###
-GET http://localhost:8999/users/62273e8aaa19a51877c29ef2
+GET http://localhost:3000/
 
 
 ###
-POST http://localhost:8999/users/signin
+POST http://localhost:3000/users/signup
 Content-Type: application/json
 
 {
-    "email": "dallies2727@gmail.com",
-    "password":"Encrypto@27",
-    "phone_number":"0282726161",
-    "fullname":"just a test"
-        
+    "username": "ajwhgea@gmbsnbnnnail.com",
+    "password":"Encrypto@27", 
+    "firstname":"Amy",
+    "lastname":"De jager",
+    "address": "123c bvamle way bateheuwel",
+    "occupation": "you dot wanna know",
+    "hobbies": "games sports and so",
+    "gender": "male",
+    "img": "https://i.postimg.cc/tg4RhvmT/2022-09-10-171140377.jpg"
+    
+
+}
+
+###
+POST http://localhost:3000/users/signin
+Content-Type: application/json
+
+{
+
+    "username": "ajwhgea@gmbsnbnnnail.com",
+    "password":"Encrypto@27"
 
 }
 
 
 ###
-DELETE http://localhost:8999/users/6218bc42f12ac86552779f89
+DELETE http://localhost:3000/users/63e8c8d53f7fd61674fcb043
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2U4YzhkNTNmN2ZkNjE2NzRmY2IwNDMiLCJpYXQiOjE2NzY0ODQ3MzksImV4cCI6MTY3NjU3MTEzOX0.KW0-2rYWvkHwsgCUW_aexI0Va_f5uKpn7oMCfX7DPOY
+Content-Type: application/json
+
 
 ###
-PATCH http://localhost:8999/users/6218be31b86000072206ea8b
+PATCH http://localhost:3000/users/63e8c8d53f7fd61674fcb043
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2U4YzhkNTNmN2ZkNjE2NzRmY2IwNDMiLCJpYXQiOjE2NzYyMzc1NDgsImV4cCI6MTY3NjMyMzk0OH0.mGqiBOEdKIe38ig7TH6rDKLp6W4QBsarSBJOOA_tyB4
 Content-Type: application/json
 
 {
-    "fullname":"master encrypto"
+    "lastname":"master encrypto"
 }

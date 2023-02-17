@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/users')
-const  bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const verifyToken = require('../middleware/auth.jwt')
 
@@ -18,14 +18,54 @@ router.get('/:id', getUser , (req, res) => {
     res.json(res.user)
 })
 
+// router.get("/allusers", (req, res) => {
+//     User.find((err, users) => {
+//         if (err) return res.status(400).json("Error: " + err);
+//         if (!users) return res.status(404).json({ message: "No users found" });
+
+//         if (req.params.userid === "allusers") {
+//             let allUsers = [];
+//             for (let i = 0; i < users.length; i++) {
+//                 allUsers.push(users[i].userid);
+//             }
+//             return res.json(allUsers);
+//         } else {
+//             User.findById(req.params.userid, (err, user) => {
+//                 if (err) return res.status(400).json("Error: " + err);
+//                 if (!user) return res.status(404).json({ message: "User not found" });
+//                 return res.json(user);
+//             });
+//         }
+//     });
+// });
+
+router.get('/', async (req, res) => {
+    try {
+    const users = await User.find()
+    res.json(users)
+    } catch (err) {
+    res.status(500).json({ message: err.message })
+    }
+    })
+
+
+
 router.post('/signup',Duplicates, async (req, res) => {
     try{ 
         const salt = await bcrypt.genSalt()
         const hashedPassword = await bcrypt.hash(req.body.password, salt)
-        const user = new User({  fullname: req.body.fullname,
-                        email: req.body.email,
+        const user = new User({  
+
+                        username: req.body.username,
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        gender: req.body.gender,
+                        hobbies: req.body.hobbies,
+                        occupation: req.body.occupation,
                         password: hashedPassword,
-                        phone_number: req.body.phone_number,
+                        address: req.body.address,
+                        img: req.body.img
+                        
                         })
             const newUser = await user.save()
             res.status(201).json(newUser)
@@ -37,55 +77,68 @@ router.post('/signup',Duplicates, async (req, res) => {
 })
 
 router.post('/signin', async (req, res) => {
-    try{ 
-      User.findOne({ email: req.body.email} , (err, user) => {
-          if(err) return handleError(err);
+    try {
+      const user = await User.findOne({ username: req.body.username });
       if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
-      let passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
+      const passwordIsValid = await bcrypt.compare(req.body.password, user.password);
       if (!passwordIsValid) {
         return res.status(401).send({
           accessToken: null,
           message: "Invalid Password!"
         });
       }
-      
-      let token = jwt.sign({ _id:  user._id, post: user.post }, process.env.ACCESS_TOKEN_SECRET, {
+      const token = await jwt.sign({ _id: user._id, post: user.post }, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: 86400 // 24 hours
       });
       res.status(200).send({
-        _id:  user._id,
-        fullname:  user.fullname,
-        email:  user.email,
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        address: user.address,
+        occupation: user.occupation,
+        hobbies: user.hobbies,
+        gender: user.gender,
+        img: user.img,
         accessToken: token,
-        number: user.phone_number
-     
+        join_date: user.join_date,
+        _id: user._id
+
       });
-    })
-    } catch(err){
-        res.status(400).json({ message: err.message })
+    } catch (err) {
+      res.status(400).json({ message: err.message });
     }
-})
+  });
+  
 
 router.patch('/:id',[getUser,verifyToken], async (req, res) => {
     if(req.params.id != req.userId){
         return res.status(401).send({ message: "Unauthorized!" });
     }
-    if(req.body.fullname !=null){
-        res.user.fullname =  req.body.fullname
+    if(req.body.hobbies !=null){
+        res.user.hobbies =  req.body.hobbies
     }
-    if(req.body.email !=null) {
-        res.user.email = req.body.email
+    if(req.body.firstname !=null){
+        res.user.firstname =  req.body.firstname
+    }
+    if(req.body.lastname !=null){
+        res.user.lastname =  req.body.lastname
+    }
+    if(req.body.gender !=null){
+        res.user.gender =  req.body.gender
+    }
+    if(req.body.occupation !=null) {
+        res.user.occupation = req.body.occupation
     }
     if(req.body.password !=null){
         res.user.password =  req.body.password
     }
-    if(req.body.phone_number !=null){
-        res.user.phone_number =  req.body.phone_number
+    if(req.body.address !=null){
+        res.user.address =  req.body.address
+    }
+    if(req.body.img !=null){
+        res.user.img =  req.body.img
     }
     
     try{
@@ -125,19 +178,20 @@ router.delete('/:id',[getUser,verifyToken], async (req, res) => {
 }
 
 
-async function Duplicates(req, res, next){
-let user 
+async function Duplicates(req, res, next) {
+    let user;
 
-try{
-    user = await User.findOne({fullname: req.body.fullname})
-    email = await User.findOne({email: req.body.email})
-    if(user || email){
-        return res.status(404).send({ message:"Username or Email already in exits"});
+    try {
+        user = await User.findOne({username: req.body.username});
+        if (user) {
+            return res.status(404).send({ message: "Username already exists"});
+        }
+    } catch (err) {
+        return res.status(500).send({ message: err.message});
     }
-  } catch(err){
-    return res.status(500).send({ message:err.message})
+
+    next();
 }
-next()
-}
+
 
 module.exports = router

@@ -1,13 +1,13 @@
-GET http://localhost:8999/posts/62275938d23a21ae9b31b051
+GET http://localhost:3000/posts/63e4dac587da94b5ed3ec0cf
 
 ###
-GET http://localhost:8999/posts
+GET http://localhost:3000/posts
 
 
 ###
-POST http://localhost:8999/posts
+POST http://localhost:3000/posts
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjI3M2U4YWFhMTlhNTE4NzdjMjllZjIiLCJpYXQiOjE2NDc1MTYzMjMsImV4cCI6MTY0NzYwMjcyM30.K9ou6m9WBJGlgfjpjgIGQrJMdIEpQL5v-k5lObgKADM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2U0ZGFjNTg3ZGE5NGI1ZWQzZWMwY2YiLCJpYXQiOjE2NzYwMjU3MzQsImV4cCI6MTY3NjExMjEzNH0.EqNAgD3ZLsXvxvSh-P8LMeY5gBz2xiYGYxU45j9rYYo
 
 {
     "img": "https://ti.postimg.cc/wjk4cgx7/hags.jpg",
